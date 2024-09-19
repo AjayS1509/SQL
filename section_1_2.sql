@@ -241,39 +241,39 @@ insert into history
 ( '7369', '2003-12-17', 'CLRK', 'GC12','GL1', 9000),
 ( '7369', '2006-12-17', 'CLRK', 'GC6', 'GL2', 11000);
 
-#1
+-- 1 List the name, employee code and designation of each employee of the office 
 select empname as name, empcode as employeecode, desigcode as designation from emp;
-#2
+-- 2 List all the departments and the budgets
 select * from dept;
 
-#3
+-- 3 List the employees and their respective department names 
 select emp.empname,dept.deptname from emp,dept where emp.deptcode = dept.deptcode;
 
-#4
+-- 4 List the employees who are not having any superior to work under
 select * from emp where supcode is null;
 
-#5
+-- 5  List the employees who are working directly under superior most employee of the office. (Assume the superior most employee is the employee who does not have a supervisor) 
 SELECT empname 
 FROM emp 
 WHERE supcode = (SELECT empcode FROM emp WHERE supcode IS NULL);
 
-#6
+-- 6 List the employee(s) who is senior most in the office
 select * from emp order by joindate ASC LIMIT 1;
 
-#7
+-- 7 List the employees who will retire from the office next. 
 SELECT empname 
 FROM emp 
 ORDER BY birthdate ASC 
 LIMIT 1;
 
-#8
+-- 8  List the departments with the respective department managers
 SELECT emp.empcode, emp.empname, dept.deptname, desig.designame
 FROM emp
 JOIN desig ON emp.desigcode = desig.desigcode
 join dept on emp.deptcode = dept.deptcode
 WHERE desig.designame = 'Manager';
 
-#9
+-- 9  List the employees who work as ‘manager’ to at least one department. 
 select emp.empcode, emp.empname,emp.desigcode
 from emp
 where emp.desigcode = (select desig.desigcode 
@@ -287,79 +287,79 @@ join desig on emp.desigcode = desig.desigcode
 join dept on emp.deptcode = dept.deptcode
 where desig.designame = 'Manager';
 
-#10
+-- 10  List the number of employees working for either ‘accounts’ or ‘personal’ or ‘purchase’ departments 
 select count(emp.empcode)
 from emp
 join dept on emp.deptcode = dept.deptcode 
 where dept.deptname ='accounts' || dept.deptname = 'personal' || dept.deptname = 'purchase';
 
-#11
+-- 11  List the employees working for ‘accounts’ or ‘personal’ department
 select emp.empcode, emp.empname, dept.deptname
 from emp
 join dept on emp.deptcode = dept.deptcode 
 where dept.deptname ='accounts' || dept.deptname = 'personal';
 
-#12
+-- 12  List the employees working for ‘accounts’ and ‘personal’ department
 select emp.empcode, emp.empname, dept.deptname
 from emp
 join dept on emp.deptcode = dept.deptcode 
 where dept.deptname ='accounts' and dept.deptname = 'personal';
 
-#13
+-- 13  List the employees working for ‘accounts’ but not for ‘personal’ department
 select emp.empcode, emp.empname, dept.deptname
 from emp
 join dept on emp.deptcode = dept.deptcode 
 where dept.deptname ='accounts' and dept.deptname <> 'personal';
 
-#14
+-- 14  List the youngest employee of the office
 select *
 from emp
 order by emp.birthdate desc limit 1;
 
-#15
+-- 15  List the employees who are drawing basic pay not equal to 12400.
 select * from emp
 where emp.basicpay <> 12400;
 
-#16 
+-- 16  List the employees who are drawing basic salary between 11000 and 12000. 
 select * from emp
 where emp.basicpay between 11000 and 12000;
 
-#17
+-- 17 
 select * from emp
 where emp.basicpay not between 11000 and 12000;
 
-#18
+-- 18 List the employees who got salary allowance between Rs.1000 to Rs.1500 in the month of January 2012. 
 select emp.empcode, emp.empname,salary.salmonth, salary.allow
 from emp
 join salary on emp.empcode = salary.empcode
 where salary.salmonth between '2012-01-01' and '2012-01-31' 
 		and salary.allow between 1000 and 1500;
 
-#19
+-- 19  List the employees whose name ends with ‘i’ or ‘y’. 
 select * from emp
 where emp.empname like '%i'or emp.empname like '%y';
 
-#20
-#TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE())
+-- 20  List the employees who have atleast 25 years of experience 
+-- TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE())
 select *,TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE()) as years_exp from emp
 where TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE()) > 25;
 
-#21
-#TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE()) as 'years of exp'
+-- 21 List the ‘Salesmen’ who have minimum 30 to 20 years of experience 
+-- TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE()) as 'years of exp'
 select * from emp
 join desig on emp.desigcode  = desig.desigcode
 where desig.designame = 'Sales Man'
 and TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE()) between 20 and 30;
 
-#22
+-- 22  List the basic salary and half of the basic salary for each employee.
 select emp.empname,salary.salmonth, salary.basic, round(basic/2) as half_salary 
 from emp
 join salary
-#on emp.empcode = salary.empcode
+-- on emp.empcode = salary.empcode
 where emp.empcode = salary.empcode;
-#group by emp.empcode;
+-- group by emp.empcode;
 
-#23
+-- 23  List the employees and the latest take-home-pay of each employee. (Hint: Take- home-pay = basic + allowance - deductions) 
 select emp.empname, salary.basic + salary.allow - salary.deduct as take_home_pay, salary.salmonth
 from emp
 join salary on emp.empcode = salary.empcode
@@ -369,9 +369,9 @@ join (
     group by empcode
 ) latest_salaries ON salary.empcode = latest_salaries.empcode AND salary.salmonth = latest_salaries.latest_month
 ORDER BY emp.empname;
-#order by salary.salmonth desc
+-- order by salary.salmonth desc
 
-#another code
+-- another code
 WITH LatestSalaries AS (
     SELECT empcode, MAX(salmonth) AS latest_month
     FROM salary
@@ -383,24 +383,24 @@ JOIN salary ON emp.empcode = salary.empcode
 JOIN LatestSalaries ON salary.empcode = LatestSalaries.empcode AND salary.salmonth = LatestSalaries.latest_month
 ORDER BY emp.empname;
 
-#24
+-- 24 List the employees and the latest take-home-pay of each employee of ‘Accounts’ department. 
 select emp.empname, salary.basic + salary.allow - salary.deduct as take_home_pay
 from emp
 join salary on emp.empcode = salary.empcode
 join dept on emp.deptcode = dept.deptcode where dept.deptname ='Accounts';
 
-#25
+-- 25 List employees and their respective ages.
 select emp.empname, TIMESTAMPDIFF(YEAR, emp.birthdate, CURDATE()) as age
 from emp;
 
-#26
+-- 26 List all the ‘Accounts’ department employees, first ordered by their age and then by their names. 
 select emp.empname, dept.deptname as department_name,TIMESTAMPDIFF(YEAR, emp.birthdate, CURDATE()) as age
 from emp
 join dept on emp.deptcode = dept.deptcode
 where dept.deptname = 'Accounts'
 order by TIMESTAMPDIFF(YEAR, emp.birthdate, CURDATE()) asc, emp.empname asc;
 
-#27
+-- 27  List the number of employees directly reporting to ‘Reddy’ 
 -- wrong code
 select count(emp.empcode) as reporting from emp
 join grade on emp.gradelevel = grade.gradelevel
@@ -431,14 +431,15 @@ join emp as m
 on e.empcode  = m.empcode 
 where e.supcode = (select empcode from emp where empname = 'Reddy');
 
-#28
+-- 28 List the employees who have atleast one person working under him/her and the number of their subordinates. List the employee with highest number of 
+-- subordinates first, next the person with next highest number of subordinates and so on.
 select e.supcode,m.empname,count(m.empcode) as num_employees
 from emp as e
 join emp as m on e.supcode = m.empcode
 group by e.supcode, m.empname
 order by num_employees desc;
 
-#29
+-- 29 List the employees who have minimum 3 employees working under him/her.
 select e.supcode,m.empname,count(m.empcode) as num_employees
 from emp as e
 join emp as m on e.supcode = m.empcode
@@ -446,8 +447,8 @@ group by e.supcode, m.empname
 having num_employees > 3
 order by num_employees desc;
 
-#30
-#dout in the question
+-- 30  List the minimum and maximum salaries drawn in each grade code. 
+-- dout in the question
 select 
     g.gradecode,
     g.gradedescription,
@@ -457,13 +458,13 @@ from emp e
 join grade g on e.gradecode = g.gradecode
 group by g.gradecode, g.gradedescription;
 
-#31
+-- 31  List the employees with names of their supervisors (Hint: Use Join).
 select e.empname, m.empname as supervisors
 from emp as e
 join emp as m 
 on e.supcode = m.empcode;
 
-#32
+-- 32  List the number of officers reporting to each supervisor having more than 3 people working under them 
 select e.supcode,m.empname,count(m.empcode) as num_employees
 from emp as e
 join emp as m on e.supcode = m.empcode
@@ -471,50 +472,50 @@ group by e.supcode, m.empname
 having num_employees > 3
 order by num_employees desc;
 
-#33
+-- 33  List the employees who have not got any promotion till now.
 SELECT empname 
 FROM emp 
 WHERE empcode NOT IN (SELECT DISTINCT empcode FROM history);
 
-#34
+-- 34 List the employee with maximum number of promotions. Also list the number of promotions that he/she got. 
 SELECT empcode, COUNT(*) AS promotions 
 FROM history 
 GROUP BY empcode 
 ORDER BY promotions DESC 
 LIMIT 1;
 
-#35
+-- 35  List the employees who got promoted in the year 1991.
 SELECT empname 
 FROM history 
 JOIN emp ON history.empcode = emp.empcode 
 WHERE YEAR(changedate) = 1991;
 
-#36
+-- 36  List the department budget and the total salary drawn (by the employees of this department). 
 select dept.deptname, dept.budget, sum(emp.basicpay) as total_salary
 from emp
 join dept 
 on emp.deptcode = dept.deptcode
 group by dept.deptcode;
 
-#37
+-- 37  Display the employee names in full uppercase.
 select upper(emp.empname) from emp;
 
-#38
+-- 38  List all the employees drawing salary higher than the salary drawn by ‘Jain’ 
 select e.empname, e.empcode, e.basicpay
 from emp as e
 join emp as m
 where m.empname = 'Jain' and m.basicpay < e.basicpay; 
 
-#39
+-- 39  List all the employees who have higher salary than all the employees who draw salary in the range of 11000 to 12000.
 SELECT empname 
 FROM emp 
 WHERE basicpay > (SELECT MAX(basicpay) FROM emp WHERE basicpay BETWEEN 11000 AND 12000);
 
-#another answer
+-- another answer
 select * from emp
 where basicpay > 12000;
 
-#40
+-- 40 List all the employees who have greater than average pay. Display the result in the increasing order of the salary
 select e.empcode, e.empname, e.basicpay
 from emp as e 
 join emp as m
@@ -530,7 +531,7 @@ m -- second nested query value assign
 on  e.basicpay > m.avg_basicpay
 order by e.basicpay desc;
 
-#41
+-- 41 List the employees who draws highest salary
 select e.empcode, e.empname, e.basicpay
 from emp as e
 join (
@@ -539,7 +540,7 @@ join (
 m -- second nested query value assign 
 on  e.basicpay = m.highest;
 
-#42
+-- 42  List all the employees other than the employees who draw highest salary 
 select e.empcode, e.empname, e.basicpay
 from emp as e
 join (
@@ -548,7 +549,7 @@ join (
 m -- second nested query value assign 
 on  e.basicpay <> m.highest;
 
-#43
+-- 43 List the employees who draw highest salary in each department
 select d.deptname, e.empname, e.basicpay
 from emp e
 join dept d on d.deptcode = e.deptcode
@@ -558,7 +559,7 @@ where e.basicpay = (
     where e2.deptcode = e.deptcode
 );
 
-#44
+-- 44  List the employee(s) getting second highest salary 
 select e.empcode, e.empname, e.basicpay
 from emp as e
 join (
@@ -590,25 +591,25 @@ where 2-1 = (select count(distinct(m.basicpay)) from emp as m
 where m.basicpay > e.basicpay);
 
 
-#45
+-- 45 .List the employee(s) who are getting fifth highest salary.
 select e.empname, e.basicpay from emp as e
 where 5-1 = (select count(distinct(m.basicpay)) from emp as m
 where m.basicpay > e.basicpay);
 
-#46
+-- 46 List the female employee who draws the highest salary higher than any other female employee
 select e.empname, e.empcode, e.sex, e.basicpay 
 from emp as e
 where e.basicpay = (select m.basicpay from emp as m  
 					where m.sex = 'F' 
 					order by m.basicpay desc limit 1);
 
-#another code if not distinct value
+-- another code if not distinct value
 select m.basicpay from emp as m  
 					where m.sex = 'F' 
 					order by m.basicpay desc limit 1;
 
 
-#47
+-- 47  List the department name of the female employee who draws the highest salary higher than any other female employee
 select e.empname, e.empcode, e.sex, e.basicpay, d.deptname 
 from emp as e
 join dept as d
@@ -616,7 +617,7 @@ on e.deptcode = d.deptcode
 where e.sex = 'F'
 order by e.basicpay desc limit 1;
 
-#another code in case of distinct basicpay
+-- another code in case of distinct basicpay
 select e.empname, e.empcode, e.sex, e.basicpay, d.deptcode 
 from emp as e
 join dept as d
@@ -625,7 +626,7 @@ where e.basicpay = (select m.basicpay from emp as m
 					where m.sex = 'F' 
 					order by m.basicpay desc limit 1);
 
-#48
+-- 48 List the department manager of the department, in which the female employee who draws the highest salary higher than any other female employee works in
 select e.empname, e.empcode, e.sex, e.basicpay, d.deptcode, m.empname as Manger
 from emp as e
 join emp as m 
@@ -636,14 +637,14 @@ where e.basicpay = (select m.basicpay from emp as m
 					where m.sex = 'F' 
 					order by m.basicpay desc limit 1);
                     
-#49
+-- 49 List all male employees who draw salary greater than atleast on female employee
 select e.empname, e.empcode, e.sex, e.basicpay 
 from emp as e
 where e.sex = 'M' and e.basicpay > (select m.basicpay from emp as m  
 					where m.sex = 'F' 
 					order by m.basicpay asc limit 1);
                     
-#50
+-- 50  List the departments in which average salary of employees is more than average salary of the company
 SELECT emp.empcode, emp.empname, dept.deptname, desig.designame
 FROM emp
 JOIN desig ON emp.desigcode = desig.desigcode
@@ -654,13 +655,13 @@ select emp.empcode, emp.empname, dept.deptname
 from emp
 join dept on emp.deptcode = dept.deptcode;
 
-#wrong code above
+-- wrong code above
 
 select d.deptname , e.empname from dept d
 join emp e on e.deptcode = d.deptcode
 where e.basicpay/12 > (select avg(basicpay) from emp);
 
-#51
+-- 51  List the employees drawing salary lesser than the average salary of employees working for ‘accounts’ department
 select emp.empname,emp.basicpay
 from emp where basicpay < (select avg(basicpay)
 from emp,dept where deptname = 'Accounts'); 
