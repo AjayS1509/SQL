@@ -1,0 +1,107 @@
+db.citizen.insertMany([
+  {
+    first: "Matthew",
+    last: "Setter",
+    age: 40,
+    gender: "m",
+    hair_colour: "brown",
+    occupation: "developer",
+    nationality: "Australian"
+  },
+  {
+    first: "James",
+    last: "Caan",
+    age: 28,
+    gender: "m",
+    hair_colour: "brown",
+    occupation: "actor",
+    nationality: "American"
+  },
+  {
+    first: "Arnold",
+    last: "Chaw",
+    age: 53,
+    gender: "m",
+    hair_colour: "brown",
+    occupation: "actor",
+    nationality: "American"
+  },
+  {
+    first: "Tony",
+    last: "Curtis",
+    age: 61,
+    gender: "m",
+    hair_colour: "brown",
+    occupation: "developer",
+    nationality: "American"
+  },
+  {
+    first: "Jamie",
+    last: "Curtis",
+    age: 32,
+    gender: "f",
+    hair_colour: "brown",
+    occupation: "actor",
+    nationality: "American"
+  },
+  {
+    first: "Michael",
+    last: "Caine",
+    age: 36,
+    gender: "m",
+    hair_colour: "brown",
+    occupation: "actor",
+    nationality: "English"
+  },
+  {
+    first: "Judi",
+    last: "Dench",
+    age: 47,
+    gender: "f",
+    hair_colour: "white",
+    occupation: "developer",
+    nationality: "English"
+  },
+  {
+    first: "Sheena",
+    last: "Bora",
+    age: 41,
+    gender: "f",
+    hair_colour: "brown",
+    occupation: "actor",
+    nationality: "American"
+  }
+]);
+
+
+3
+db.citizen.find(
+  { 
+    gender: "m", 
+    nationality: "American", 
+    occupation: "actor" 
+  }
+).sort({ age: 1 });
+
+4
+db.citizen.updateOne( { first:"James", last:"Cann"}, {$set: {hair_colour: "grey"} });
+
+5
+db.citizen.countDocuments({age: {$gt: 35}});
+
+6
+db.citizen.updateMany({
+... first: "Toney"},
+... {$inc: {age: 3}});
+
+7
+db.citizen.createIndex({age: 1});
+
+8
+db.citizen.deleteMany({last: "Curtis"});
+
+9
+db.citizen.getIndexes();
+
+10
+db.dropDatabase()
